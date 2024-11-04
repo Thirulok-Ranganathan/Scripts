@@ -14,6 +14,10 @@ net.ipv4.ip_forward = 1
 EOF
 sudo sysctl --system
 
+#Disable swap
+#sudo swapoff -a
+#sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
 #Install containerd runtime and necessary tools
 
 wget https://github.com/containerd/containerd/releases/download/v1.7.23/containerd-1.7.23-linux-amd64.tar.gz
@@ -46,14 +50,6 @@ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
-
-# **Configure kubelet to allow swap usage**
-KUBELET_CONFIG="/etc/default/kubelet"
-if ! grep -q "fail-swap-on=false" "$KUBELET_CONFIG"; then
-    echo "KUBELET_CONFIG: Adding fail-swap-on=false"
-    # **Add the following line to the kubelet configuration**
-    echo "KUBELET_EXTRA_ARGS=--fail-swap-on=false" | sudo tee -a $KUBELET_CONFIG > /dev/null
-fi
 
 sudo systemctl enable --now kubelet
 sudo systemctl restart kubelet
