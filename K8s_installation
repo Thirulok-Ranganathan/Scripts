@@ -51,5 +51,13 @@ sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
+# **Configure kubelet to allow swap usage**
+#KUBELET_CONFIG="/etc/default/kubelet"
+#if ! grep -q "fail-swap-on=false" "$KUBELET_CONFIG"; then
+  #  echo "KUBELET_CONFIG: Adding fail-swap-on=false"
+    # **Add the following line to the kubelet configuration**
+ #   echo "KUBELET_EXTRA_ARGS=--fail-swap-on=false" | sudo tee -a $KUBELET_CONFIG > /dev/null
+#fi
+
 sudo systemctl enable --now kubelet
 sudo systemctl restart kubelet
